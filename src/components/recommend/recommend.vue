@@ -1,6 +1,6 @@
 <template>
   <div class="recommend" ref="recommend">
-    <div ref="scroll" class="recommend-content">
+    <scroll class="recommend-content" :data="discList">
       <div>
         <div v-if="recommends.length" class="slider-wrapper">
           <div class="slider-content">
@@ -16,36 +16,56 @@
         <div class="recommend-list">
           <h1 class="list-title">热门歌单推荐</h1>
           <ul>
+            <li v-for="(item, index) in discList" class="item" :key="index">
+              <div class="icon">
+                <img :src="item.imgurl" width="60" height="60" alt=""/>
+              </div>
+              <div class="text">
+                <h2 class="name" v-html="item.creator.name"></h2>
+                <p class="desc" v-html="item.dissname"></p>
+              </div>
+            </li>
           </ul>
         </div>
       </div>
-    </div>
+    </scroll>
   </div>
 </template>
 
 <script>
-import { getRecommend } from 'api/recommend'
+import { getRecommend, getDiscList } from 'api/recommend'
 import Slider from 'base/slider/slider'
+import Scroll from 'base/scroll/scroll'
 import { ERR_OK } from 'api/config'
 
 export default {
   name: 'MRecommend',
   components: {
-    Slider
+    Slider,
+    Scroll
   },
   data () {
     return {
-      recommends: []
+      recommends: [],
+      discList: []
     }
   },
   created () {
-    this._getRecommend()
+    this._getRecommend(),
+    this._getDiscList()
   },
   methods: {
     _getRecommend () {
       getRecommend().then((res) => {
         if (res.code === ERR_OK) {
           this.recommends = res.data.slider
+        }
+      })
+    },
+    _getDiscList () {
+      getDiscList().then((res) => {
+        if (res.code === ERR_OK) {
+          this.discList = res.data.list
         }
       })
     }
