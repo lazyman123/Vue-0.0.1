@@ -1,13 +1,13 @@
 <template>
   <div class="recommend" ref="recommend">
-    <scroll class="recommend-content" :data="discList">
+    <scroll ref="scroll" class="recommend-content" :data="discList">
       <div>
         <div v-if="recommends.length" class="slider-wrapper">
           <div class="slider-content">
             <slider ref="slider">
               <div v-for="(item, index) in recommends" :key="index">
                 <a :href="item.linkUrl">
-                  <img :src="item.picUrl">
+                  <img class="needsclick" @load="loadImg" :src="item.picUrl">
                 </a>
               </div>
             </slider>
@@ -18,7 +18,7 @@
           <ul>
             <li v-for="(item, index) in discList" class="item" :key="index">
               <div class="icon">
-                <img :src="item.imgurl" width="60" height="60" alt=""/>
+                <img v-lazy="item.imgurl" width="60" height="60" alt=""/>
               </div>
               <div class="text">
                 <h2 class="name" v-html="item.creator.name"></h2>
@@ -28,6 +28,9 @@
           </ul>
         </div>
       </div>
+      <div class="loading-container" v-show="!discList.length">
+        <loading></loading>
+      </div>
     </scroll>
   </div>
 </template>
@@ -36,13 +39,15 @@
 import { getRecommend, getDiscList } from 'api/recommend'
 import Slider from 'base/slider/slider'
 import Scroll from 'base/scroll/scroll'
+import Loading from 'base/loading/loading'
 import { ERR_OK } from 'api/config'
 
 export default {
   name: 'MRecommend',
   components: {
     Slider,
-    Scroll
+    Scroll,
+    Loading
   },
   data () {
     return {
@@ -52,7 +57,9 @@ export default {
   },
   created () {
     this._getRecommend(),
-    this._getDiscList()
+    setTimeout(() => {
+      this._getDiscList()
+    }, 1000)
   },
   methods: {
     _getRecommend () {
@@ -68,6 +75,14 @@ export default {
           this.discList = res.data.list
         }
       })
+    },
+    loadImg () {
+      if (!this.checkLoaded) {
+        setTimeout(() => {
+          this.$refs.scroll.refresh()
+        },20)
+        this.checkLoaded = true
+      }
     }
   }
 }
