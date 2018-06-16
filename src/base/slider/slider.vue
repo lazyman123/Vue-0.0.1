@@ -51,7 +51,7 @@ export default {
     }, 20)
 
     window.addEventListener('resize', () => {
-      if (!this.slider) {
+      if (!this.slider || !this.slider.enabled) {
         return
       }
       this._setSliderWidth(true)
@@ -78,7 +78,7 @@ export default {
       this.slider = new Bscroll(this.$refs.slider, {
         scrollX: true,
         scrollY: false,
-        momentum: false,
+        momentum: false, //当快速在屏幕上滑动的时候，会根据滑动的距离和时间计算出动量，并生成动画。
         snap: {
           loop: this.loop,
           threshold: 0.3,
@@ -89,11 +89,7 @@ export default {
 
       this.slider.on('scrollEnd', () => {
         let pageIndex = this.slider.getCurrentPage().pageX
-        if (this.loop) {
-          pageIndex -= 1
-        }
         this.currentPageIndex = pageIndex
-
         if (this.autoPlay) {
           clearTimeout(this.timer)
           this._play()
@@ -104,10 +100,6 @@ export default {
       this.dots = new Array(this.children.length)
     },
     _play () {
-      let pageIndex = this.currentPageIndex + 1
-      if (this.loop) {
-        pageIndex += 1
-      }
       this.timer = setTimeout(() => {
         this.slider.next(400)
       }, this.interval)
