@@ -112,8 +112,16 @@ export default {
       this.scrollY = pos.y
     },
     _scrollTo (index) {
+      if (!index && index !== 0) {
+        return
+      }
+      if (index < 0) {
+        index = 0
+      } else if (index > this.listHeight.length - 2) {
+        index = this.listHeight.length - 2
+      }
       this.$refs.listview.scrollToElement(this.$refs.listgroup[index], 0)
-      // this.scrollY = this.$refs.listview.scroll.y
+      this.scrollY = this.$refs.listview.scroll.y
     },
     _calculateHeight () {
       this.listHeight = []
