@@ -4,6 +4,7 @@ import MRecommend from 'components/recommend/recommend'
 import MSinger from 'components/singer/singer'
 import MRank from 'components/rank/rank'
 import MSearch from 'components/search/search'
+import SingerDetail from 'components/singer-detail/singer-detail'
 
 
 Vue.use(Router)
@@ -20,7 +21,13 @@ export default new Router({
     },
     {
       path: '/singer',
-      component: MSinger
+      component: MSinger,
+      children: [
+        {
+          path: ':id',
+          component: SingerDetail
+        }
+      ]
     },
     {
       path: '/rank',
