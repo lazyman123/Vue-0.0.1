@@ -26,6 +26,13 @@
           </div>
         </div>
         <div class="bottom">
+          <div class="progress-wrapper">
+            <span class="time time-l">{{format(currentTime)}}</span>
+            <div class="progress-bar-wrapper">
+              <progress-bar :percent="percent"></progress-bar>
+            </div>
+            <span class="time time-r">{{format(currentSong.duration)}}</span>
+          </div>
           <div class="operators">
             <div class="icon i-left">
               <i class="icon-sequence"></i>
@@ -68,7 +75,8 @@
     <audio :src="currentSong.url" 
            @canplay="ready" 
            ref="audio"
-           @error="error"></audio>
+           @error="error"
+           @timeupdate="updateTime"></audio>
   </div>
 </template>
 
@@ -76,14 +84,16 @@
 import { mapGetters, mapMutations, mapActions } from 'vuex'
 import animations from 'create-keyframe-animation'
 import { prefixedStyle } from 'common/js/dom'
-import songListVue from '../../base/song-list/song-list.vue';
+import songListVue from '../../base/song-list/song-list.vue'
+import ProgressBar from 'base/progress-bar/progress-bar'
 
 const transform = prefixedStyle('transform')
 
 export default {
   data () {
     return {
-      songReady: false
+      songReady: false,
+      currentTime: 0
     }
   },
   computed: {
@@ -98,6 +108,9 @@ export default {
     },
     disableCls () {
       return this.songReady ? '' : 'disable'
+    },
+    percent () {
+      return this.currentTime / this.currentSong.duration
     },
     ...mapGetters([
       'fullScreen',
@@ -146,6 +159,23 @@ export default {
     },
     error () {
       this.songReady = true
+    },
+    updateTime(e) {
+      this.currentTime = e.target.currentTime
+    },
+    format (interval) {
+      interval = interval | 0
+      const minute = interval / 60 | 0
+      const second = this._pad(interval % 60)
+      return `${minute} : ${second}`
+    },
+    _pad (num , n=2) {
+      let len = num.toString().length
+      while (len < n) {
+        num = '0' + num
+        len++
+      }
+      return num
     },
     enter (el, done) {
       const {x, y, scale} = this._getPosAndScale()
@@ -196,7 +226,6 @@ export default {
         return
       }
       this.setPlayingState(!this.playing)
-      this.songReady = false
     },
     _getPosAndScale () {
       const targetWidth = 40
@@ -232,6 +261,9 @@ export default {
         newPlaying ? audio.play() : audio.pause()
       })
     }
+  },
+  components: {
+    ProgressBar
   }
 }
 </script>
@@ -380,7 +412,7 @@ export default {
           .time
             color: $color-text
             font-size: $font-size-small
-            flex: 0 0 30px
+            flex: 0 0 40px
             line-height: 30px
             width: 30px
             &.time-l
