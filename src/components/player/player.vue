@@ -29,7 +29,7 @@
           <div class="progress-wrapper">
             <span class="time time-l">{{format(currentTime)}}</span>
             <div class="progress-bar-wrapper">
-              <progress-bar :percent="percent"></progress-bar>
+              <progress-bar :percent="percent" @percentChange="onProgressBarChange"></progress-bar>
             </div>
             <span class="time time-r">{{format(currentSong.duration)}}</span>
           </div>
@@ -65,7 +65,9 @@
         <p class="desc" v-html="currentSong.singer"></p>
       </div>
       <div class="control">
-        <i :class="miniIcon" @click.stop="togglePlaying" class="needsclick"></i>
+        <progress-circle :radius="radius" :percent="percent">
+          <i :class="miniIcon" @click.stop="togglePlaying" class="icon-mini"></i>
+        </progress-circle>
       </div>
       <div class="control">
         <i class="icon-playlist"></i>
@@ -86,6 +88,7 @@ import animations from 'create-keyframe-animation'
 import { prefixedStyle } from 'common/js/dom'
 import songListVue from '../../base/song-list/song-list.vue'
 import ProgressBar from 'base/progress-bar/progress-bar'
+import ProgressCircle from 'base/progress-circle/progress-circle'
 
 const transform = prefixedStyle('transform')
 
@@ -93,7 +96,8 @@ export default {
   data () {
     return {
       songReady: false,
-      currentTime: 0
+      currentTime: 0,
+      radius: 32
     }
   },
   computed: {
@@ -168,6 +172,12 @@ export default {
       const minute = interval / 60 | 0
       const second = this._pad(interval % 60)
       return `${minute} : ${second}`
+    },
+    onProgressBarChange (percent) {
+      this.$refs.audio.currentTime = this.currentSong.duration * percent
+      if (!this.playing) {
+        this.togglePlaying()
+      }
     },
     _pad (num , n=2) {
       let len = num.toString().length
@@ -263,7 +273,8 @@ export default {
     }
   },
   components: {
-    ProgressBar
+    ProgressBar,
+    ProgressCircle
   }
 }
 </script>
@@ -507,11 +518,10 @@ export default {
           font-size: 32px
           position: absolute
           left: 0
-          top: 0
+          top: 11px
   @keyframes rotate
     0%
       transform: rotate(0)
     100%
       transform: rotate(360deg)
 </style>
-
