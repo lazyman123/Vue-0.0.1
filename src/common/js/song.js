@@ -24,7 +24,7 @@ export default class Song {
     this.url = url
   }
 
-  getLyric() {
+  getLyric() { //获取并解析歌词
     if (this.lyric) {
       return Promise.resolve(this.lyric)
     }
