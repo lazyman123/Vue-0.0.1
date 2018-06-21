@@ -170,7 +170,7 @@ export default {
       if (!this.songReady) {
         return
       }
-      if (this.playList.length === 1) {
+      if (this.playlist.length === 1) {
         this.loop()
       } else {
         let index = this.currentIndex + 1
@@ -188,7 +188,7 @@ export default {
       if (!this.songReady) {
         return
       }
-      if (this.playList.length === 1) {
+      if (this.playlist.length === 1) {
         this.loop()
       } else {
         let index = this.currentIndex - 1
