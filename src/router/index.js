@@ -5,6 +5,7 @@ import MSinger from 'components/singer/singer'
 import MRank from 'components/rank/rank'
 import MSearch from 'components/search/search'
 import SingerDetail from 'components/singer-detail/singer-detail'
+import Disc from 'components/disc/disc'
 
 
 Vue.use(Router)
@@ -18,6 +19,12 @@ export default new Router({
     {
       path: '/recommend',
       component: MRecommend,
+      children: [
+        {
+          path: ':id',
+          component: Disc
+        }
+      ]
     },
     {
       path: '/singer',
