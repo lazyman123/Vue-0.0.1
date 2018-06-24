@@ -1,16 +1,17 @@
 <template>
   <div class="search-box">
     <i class="icon-search"></i>
-    <input class="box" v-model="querry" :placeholder="placeholder">
-    <i v-show="querry" class="icon-dismiss" @click="clear"></i>
+    <input class="box" v-model="query" :placeholder="placeholder" ref="query">
+    <i v-show="query" class="icon-dismiss" @click="clear"></i>
   </div>
 </template>
 
 <script>
+import { debounce } from 'common/js/util'
 export default {
   data() {
     return {
-      querry: ''
+      query: ''
     }
   },
   props: {
@@ -21,45 +22,49 @@ export default {
   },
   methods: {
     clear () {
-      this.querry = ""
+      this.query = ""
     },
-    setQuerry (querry) {
-      this.querry = querry
+    setQuery (query) {
+      this.query = query
+    },
+    blur () {
+      this.$refs.query.blur()
     }
   },
-  created () { //告诉外部组件 querry 的变化
-    this.$watch('querry', (newQuerry) => {
-      this.$emit('querry', newQuerry)
-    })
+  created () { //告诉外部组件 query 的变化
+    this.$watch('query', debounce((newQuerry) => {
+      this.$emit('query', newQuerry)
+    }, 200))
   }
 }
 </script>
 
 <style lang="stylus" scoped>
   @import '~common/stylus/variable'
+
   .search-box
-    display flex
-    align-items  center
-    box-sizing border-box
-    width 100%
-    padding 0 6px
-    height 40px
-    background $color-highlight-background
-    border-radius 6px
+    display: flex
+    align-items: center
+    box-sizing: border-box
+    width: 100%
+    padding: 0 6px
+    height: 40px
+    background: $color-highlight-background
+    border-radius: 6px
     .icon-search
-      font-size 24px
-      color $color-background
+      font-size: 24px
+      color: $color-background
     .box
-      flex 1
-      margin 0 5px
-      line-height 18px
-      background $color-highlight-background
-      color $color-text
-      font-size $font-size-medium
-      outline 0
+      flex: 1
+      margin: 0 5px
+      line-height: 18px
+      background: $color-highlight-background
+      color: $color-text
+      font-size: $font-size-medium
+      outline: 0
       &::placeholder
-        color $color-text-d
+        color: $color-text-d
     .icon-dismiss
-      font-size 16px
-      color $color-background
+      font-size: 16px
+      color: $color-background
 </style>

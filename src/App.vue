@@ -1,5 +1,5 @@
 <template>
-  <div id="app">
+  <div id="app" @touchmove.prevent>
     <m-header></m-header>
     <m-tab></m-tab>
     <keep-alive>
@@ -24,7 +24,4 @@ export default {
 </script>
 
 <style lang="stylus" scoped>
-  @import "~common/stylus/variable.styl"
-  #app
-    color $color-theme
 </style>
