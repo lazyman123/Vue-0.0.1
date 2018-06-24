@@ -1,16 +1,16 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import MRecommend from 'components/recommend/recommend'
-import MSinger from 'components/singer/singer'
-import MRank from 'components/rank/rank'
-import MSearch from 'components/search/search'
-import SingerDetail from 'components/singer-detail/singer-detail'
-import Disc from 'components/disc/disc'
-import TopList from 'components/top-list/top-list'
-import UserCenter from 'components/user-center/user-center'
-
 
 Vue.use(Router)
+
+const MRecommend = () => import('components/recommend/recommend')
+const MSinger = () => import('components/singer/singer')
+const MRank = () => import('components/rank/rank')
+const MSearch = () => import('components/search/search')
+const SingerDetail = () => import('components/singer-detail/singer-detail')
+const Disc = () => import('components/disc/disc')
+const TopList = () => import('components/top-list/top-list')
+const UserCenter = () => import('components/user-center/user-center')
 
 export default new Router({
   routes: [
